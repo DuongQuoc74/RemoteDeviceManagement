@@ -1,0 +1,168 @@
+﻿@model Jabil.Pico.Common.ViewModels.DeviceDetailVM
+@{
+    ViewBag.Title = "Device detail";
+    TimeSpan? timeOnlineResult = DateTime.Now - Model.Device.LastOnlineCheck;
+    TimeSpan onlineTimeOutMinutes = TimeSpan.FromMinutes(Int32.Parse(Model.DeviceSetting.OnlineTimeOutMinutes));
+
+    TimeSpan? timeTicketResult = DateTime.Now - Model.Device.TicketDateStop;
+    TimeSpan ticketsApiCheckTimeOutMinutes = TimeSpan.FromMinutes(Int32.Parse(Model.DeviceSetting.TicketsApiCheckTimeOutMinutes));
+    
+}
+
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Device Detail</h1>
+    </section>
+    <div class="pico-detail">
+        <form class="row" action="~/Device/Detail" method="post">
+            <div class="find-panel">
+                <button type="submit" class="btn btn-success pico-button">Update</button>
+
+                @if (Model.Device.Status.Equals(Jabil.Pico.Common.DeviceStatusValues.Active, StringComparison.OrdinalIgnoreCase))
+                {
+                    <a href="@Url.Action("UpdateStatusSingle", "Device", new { id = Model.Device.Id, status = Jabil.Pico.Common.DeviceStatusValues.Deactivated, machineId = Model.Device.MachineId })" class="btn btn-warning pico-button">Deactivate</a>
+                }
+                else if (Model.Device.Status.Equals(Jabil.Pico.Common.DeviceStatusValues.Deactivated, StringComparison.OrdinalIgnoreCase))
+                {
+                    <a href="@Url.Action("UpdateStatusSingle", "Device", new { id = Model.Device.Id, status = Jabil.Pico.Common.DeviceStatusValues.Active, machineId = Model.Device.MachineId })" class="btn btn-info pico-button">Activate</a>
+                    <a href="@Url.Action("UpdateStatusSingle", "Device", new { id = Model.Device.Id, status = Jabil.Pico.Common.DeviceStatusValues.Disable, machineId = Model.Device.MachineId })" class="btn btn-secondary pico-button">Disable</a>
+                }
+                else if (Model.Device.Status.Equals(Jabil.Pico.Common.DeviceStatusValues.Disable, StringComparison.OrdinalIgnoreCase))
+                {
+                    <a href="@Url.Action("UpdateStatusSingle", "Device", new { id = Model.Device.Id, status = Jabil.Pico.Common.DeviceStatusValues.Deactivated, machineId = Model.Device.MachineId })" class="btn btn-warning pico-button">Deactivate</a>
+                    <a href="@Url.Action("Delete", "Device", new { id = Model.Device.Id })" class="btn btn-danger pico-button">Delete</a>
+                }
+                <button type="button" class="btn btn-dark pico-button" data-bs-toggle="modal" data-bs-target="#historyModal">
+                    History
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="id" class="form-label">Device ID</label>
+                            <input type="text" id="id" name="id" class="form-control" placeholder="@Model.Device.Id" value="@Model.Device.Id" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="machineName" class="form-label">Machine</label>
+                            <input type="text" id="machineName" class="form-control" placeholder="@Model.Device.MachineName" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="Remark" class="form-label">Remark</label>
+                        <textarea id="Remark" name="Remark" class="form-control">@Model.Device.Remark</textarea>
+                    </div>
+
+                    <div class="col-md-12">
+                        @if (Model.Device.TicketDateStop == null)
+                        {
+                            <div>
+                                <label for="statusValue" class="form-label">Pending ticket</label>
+                            </div>
+                            <input type="text" id="statusValue" class="form-control" placeholder="N/A" disabled>
+                        }
+                        else
+                        {
+                            if (timeTicketResult < ticketsApiCheckTimeOutMinutes)
+                            {
+                                <div>
+                                    <label for="statusValue" class="form-label">Pending ticket</label>&nbsp;/
+                                    <a href="http://@Model.DeviceSetting.CloseTicketURL?Line=@Model.Device.LineName&Process=@Model.DeviceSetting.CloseTicketParameterProcess&Machine=@Model.Device.MachineName&PKMachine=@Model.Device.MachineId&PKProcesID=@Model.DeviceSetting.CloseTicketParameterProcesId&PKLineID=@Model.Device.LineId" rel="noopener" target="_blank"> Close ticket</a>
+                                </div>
+                                <input type="text" id="statusValue" class="form-control" placeholder="stopped at @Model.Device.TicketDateStop - Ticket #@Model.Device.TicketId" disabled>
+                            }
+                            else
+                            {
+                                <div>
+                                    <label style="color: red " for="statusValue" class="form-label">Pending ticket</label> &nbsp;/
+                                    <a style="color: red" href="http://@Model.DeviceSetting.CloseTicketURL?Line=@Model.Device.LineName&Process=@Model.DeviceSetting.CloseTicketParameterProcess&Machine=@Model.Device.MachineName&PKMachine=@Model.Device.MachineId&PKProcesID=@Model.DeviceSetting.CloseTicketParameterProcesId&PKLineID=@Model.Device.LineId" rel="noopener" target="_blank"> Close ticket</a>
+                                </div>
+
+
+                                <input type="text" id="statusValue" class="form-control" placeholder="stopped at @Model.Device.TicketDateStop - Ticket #@Model.Device.TicketId" disabled>
+                            }
+                        }
+
+                    </div>
+
+                    <div class="col-12">
+                        <label for="guidPico" class="form-label">GUID</label>
+                        <input type="text" id="guidPico" class="form-control" value="@Model.Device.Guid" disabled>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="statusValue" class="form-label">Status</label>
+                            <input type="text" id="statusValue" class="form-control" placeholder="@Model.Device.Status" disabled>
+                            @Html.Hidden("status", Model.Device.Status)
+                        </div>
+                        <div class="col-md-6">
+
+                            @if (timeOnlineResult <= onlineTimeOutMinutes)
+                            {
+                                <div style="color: forestgreen">
+                                    <label for="createDate" class="form-label">Last online check</label>
+                                    <i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                        </svg>
+                                    </i>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div style="color: red">
+                                    <label for="createDate" class="form-label">Last online check</label>
+                                    <i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                                        </svg>
+                                    </i>
+                                </div>
+
+                            }
+                            <input type="datetime" id="createDate" class="form-control" placeholder="@Model.Device.LastOnlineCheck" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="updatedBy" class="form-label">Updated by</label>
+                            <input type="text" id="updatedBy" class="form-control" placeholder="@Model.Device.UpdatedBy" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="updatedDate" class="form-label">Last Updated</label>
+                            <input type="text" id="updatedDate" class="form-control" placeholder="@Model.Device.Updated" disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="createdBy" class="form-label">Created by</label>
+                            <input type="text" id="createdBy" class="form-control" placeholder="@Model.Device.CreatedBy" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="createDate" class="form-label">Created</label>
+                            <input type="text" id="createDate" class="form-control" placeholder="@Model.Device.Created" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6 col-sm-12">
+                    <div class="table-container">
+                        <label class="float-end">Total @Model.Device.TicketListVM.Tickets.Length records</label>
+                        <div id="table-container">
+                            @Html.Partial("PartialTicketsTable", Model.Device.TicketListVM)
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <div>
+            @Html.Partial("PartialDeviceHistoryTable", Model.Device.ListDeviceHistoryVM)
+        </div>
+    </div>
+
+</main>

@@ -1,0 +1,65 @@
+﻿@model Jabil.Pico.Common.ViewModels.UserRoleListVM
+
+@{
+    ViewBag.Title = "Users";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Users</h1>
+    </section>
+    <div class="pico-detail">
+        <div class="find-panel">
+            <div class="flex-column">
+                <a href="~/User/Add" class="btn btn-success pico-button">Add</a>
+            </div>
+        </div>
+        <label class="float-end">Total @Model.UserRoles.Length records</label>
+        <table aria-describedby="title" class="table table-bordered border-primary table-striped">
+            <thead class="theadj">
+                <tr>
+                    <th scope="col">Employee Number</th>
+                    <th scope="col">WindowsNT</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Active</th>
+                    <th scope="col">Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var User in Model.UserRoles)
+                {
+                    <tr>
+                        <th scope="row">@User.EmployeeNumber</th>
+                        <td>@User.WindowsNT</td>
+                        <td>@User.RoleId</td>
+                        <td>@User.Available</td>
+                        <td>
+                            <form>
+                                <input type="text" id="userId" name="UserId" class="form-control" value="@User.Id" hidden>
+                                @{
+                                    if (User.Available)
+                                    {
+                                        <input type="submit" id="deactivate" formaction="~/User/Deactivate" formmethod="post" class="btn btn-warning" value="Deactivate">
+                                    }
+                                    else
+                                    {
+                                        <input type="submit" id="activate" formaction="~/User/Activate" formmethod="post" class="btn btn-success" value="Activate">
+                                    }
+                                    if (User.RoleId == 2)
+                                    {
+                                        <input type="submit" id="promote" formaction="~/User/Demote" formmethod="post" class="btn btn-success" value="Promote">
+                                    }
+                                    else if (User.RoleId == 1)
+                                    {
+                                        <input type="submit" id="demote" formaction="~/User/Promote" formmethod="post" class="btn btn-warning" value="Demote">
+                                    }
+                                }
+                                <input type="submit" id="delete" formaction="~/User/Delete" formmethod="post" class="btn btn-danger" value="Delete">
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</main>

@@ -1,0 +1,63 @@
+﻿@model Jabil.Pico.Common.ViewModels.DeviceHistoryVM[]
+
+<!-- Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="historyModalLabel">History</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table aria-describedby="title" class="table table-bordered border-primary table-striped">
+                                <thead class="theadj">
+                                    <tr>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Created</th>
+                                        <th scope="col">Remark</th>
+                                        <th scope="col">User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderByDescending(x=>x.Created))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (item.Status == "delete")
+                                                {
+                                                    <span class="text-bg-danger">@item.Status</span>
+                                                }
+                                                else if (item.Status == "active")
+                                                {
+                                                    <span class="text-bg-primary">@item.Status</span>
+                                                }
+                                                else if (item.Status == "deactivated")
+                                                {
+                                                    <span class="text-bg-secondary">@item.Status</span>
+                                                }
+                                                else if (item.Status == "disabled")
+                                                {
+                                                    <span class="text-bg-warning">@item.Status</span>
+                                                }
+                                            </td>
+                                            <td>@item.Created</td>
+                                            <td>@item.Remark</td>
+                                            <td>@item.CreatedBy</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>

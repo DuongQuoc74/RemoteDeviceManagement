@@ -1,0 +1,38 @@
+﻿@model Jabil.Pico.Common.ViewModels.LoginVM
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="d-flex justify-content-center">
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Login</h1>
+    </section>
+
+    <div class="pico-detail">
+        <form class="row" action="~/User/Login" method="post">
+            <div class="col-md-12">
+                <br />
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="@Model.Username">
+            </div>
+            <div class="col-md-12">
+                <br />
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="@Model.Password">
+            </div>
+            <div class="col-md-12">
+                <br />
+                <input type="submit" id="login" class="btn btn-success" value="Login" />
+            </div>
+            @if (Model.ErrorCode == 1)
+            {
+                <div class="col-md-12">
+                    <span class="text-warning">Please enter correct username/password</span>
+                </div>
+            }
+        </form>
+        <br />
+    </div>
+</main>
+

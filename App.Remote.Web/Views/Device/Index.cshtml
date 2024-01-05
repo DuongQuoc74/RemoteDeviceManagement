@@ -1,0 +1,139 @@
+﻿@model Jabil.Pico.Common.ViewModels.DeviceListVM
+@{
+    ViewBag.Title = "Devices";
+    var refreshTime = System.Configuration.ConfigurationManager.AppSettings.Get("refreshTimeMillisecond");
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Devices</h1>
+    </section>
+    <div class="pico-detail">
+        <div class="find-panel">
+            <a href="~/Device/Add" class="btn btn-success pico-button">Add</a>
+            <button type="button" id="deactivate-button" class="btn btn-warning pico-button">Deactivate</button>
+            <button type="button" id="activate-button" class="btn btn-info pico-button">Activate</button>
+            <span class="text-info float-end" id="refresh-time"></span>
+        </div>
+        <div id="error-message" style="display: none; color: red;"></div>
+        <div id="spinner" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div id="table-container">
+            @Html.Partial("DevicesTable", Model)
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+     $(function () {
+         var isSelecting = false;
+         // Handle the delete button click event
+         $("#deactivate-button").click(function () {
+             // Get the selected ids from the checkboxes
+             var ids = $("input[name='ids']:checked").map(function () {
+                 return $(this).val();
+             }).get();
+             if (ids.length <= 0) {
+                 alert('Please select device to continue.');
+             } else {
+                 // Confirm the deletion
+                 if (confirm("Are you sure you want to deactivate the selected devices?")) {
+                     // Show the spinner while loading data
+                     $("#spinner").show();
+
+                     // Send a post request to the controller with the ids
+                     $.post("@Url.Action("UpdateStatusList", "Device")", { ids: ids, active: false }, function (data) {
+                         // Hide the spinner when data is loaded
+                         $("#spinner").hide();
+
+                         // If the request is successful, reload the table with ajax
+                         if (data.success) {
+                            var encodedUrl = encodeURI("@Url.Action("Partial", "Device")");
+                            $("#table-container").load(encodedUrl);
+                             $("#error-message").hide();
+                             isSelecting = false;
+                         }
+                         else {
+                             // If the request fails, show the error message
+                             $("#error-message").text(data.message).show();
+
+                         }
+                     });
+                 }
+             }
+         });
+         $("#activate-button").click(function () {
+             // Get the selected ids from the checkboxes
+             var ids = $("input[name='ids']:checked").map(function () {
+                 return $(this).val();
+             }).get();
+             if (ids.length <= 0) {
+                 alert('Please select device to continue.');
+             } else {
+                 // Confirm the deletion
+                 if (confirm("Are you sure you want to activate the selected devices?")) {
+                     // Show the spinner while loading data
+                     $("#spinner").show();
+
+                     // Send a post request to the controller with the ids
+                     $.post("@Url.Action("UpdateStatusList", "Device")", { ids: ids, active: true }, function (data) {
+                         // Hide the spinner when data is loaded
+                         $("#spinner").hide();
+
+                         // If the request is successful, reload the table with ajax
+                         if (data.success) {
+                            var encodedUrl = encodeURI("@Url.Action("Partial", "Device")");
+                            $("#table-container").load(encodedUrl);
+                             $("#error-message").hide();
+                             isSelecting = false;
+                         }
+                         else {
+						 // If the request fails, show the error message
+                             $("#error-message").text(data.message).show();
+
+                         }
+                     });
+                 }
+             }
+         });
+         $(document).on('change', '.deviceCheckbox', function () {
+             if ($(this).is(":checked")) {
+                 isSelecting = true;
+             } else {
+                 isSelecting = false;
+             }
+         });
+
+         $(document).on('change', '#select-all', function () {
+             // Check or uncheck all the checkboxes based on the select all checkbox status
+             $("input[name='ids']").prop("checked", $(this).prop("checked"));
+             if ($(this).is(":checked")) {
+                 isSelecting = true;
+             } else {
+                 isSelecting = false;
+             }
+         });
+         $("input[name='ids']").prop("checked", $(this).prop("checked"));
+         var time = new Date().toLocaleString();
+         $("#refresh-time").text("Last updated: " + time);
+        setInterval(function () {
+            if (!isSelecting) {
+                if (document.title.includes("Devices")) {
+                    $("#spinner").show();
+                    var encodedUrl = encodeURI("@Url.Action("Partial", "Device")");
+                    $("#table-container").load(encodedUrl);
+                    $("#spinner").hide();
+                    var time = new Date().toLocaleString();
+                    $("#refresh-time").text("Last updated: " + time);
+                }
+            }
+        }, @refreshTime);
+
+     });
+
+    </script>
+}

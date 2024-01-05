@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="PICO" />
+  <setParameter name="ApplicationContext-Web.config Connection String" value="Data Source=192.168.1.3\SQL2022; User ID=sa; Password=Tamkhoa@123; Initial Catalog=ME_Attrition" />
+</parameters>

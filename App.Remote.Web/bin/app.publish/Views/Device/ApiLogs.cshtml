@@ -1,0 +1,79 @@
+﻿@model Jabil.Pico.Common.ViewModels.ApiLogsListVM
+
+@{
+    ViewBag.Title = "Api logs";
+    var Stt = 0;
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Api logs</h1>
+    </section>
+    <div class="pico-detail">
+        @using (Html.BeginForm("FindApiLogs", "Device"))
+        {
+            <div class="find-panel d-flex">
+                <div class="col-md-3">
+                    <div class="row">
+                        <label for="fromDate" class="col-form-label col-md-3">From</label>
+                        <div class="col-md-8">
+                            @Html.EditorFor(m =>m.FindFromDate, new { htmlAtributes = new { @class = "datepicker" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="row">
+                        <label for="toDate" class="col-form-label col-md-2">To</label>
+                        <div class="col-md-8">
+                            @Html.EditorFor(m => m.FindToDate, new { htmlAtributes = new { @class = "datepicker" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <label for="machineName" class="col-form-label col-md-4">Device Guid</label>
+                        <div class="col-md-6">
+                            @Html.TextBox("GuidDevice")
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success float-end pico-button" value="Find">Find</button>
+                </div>
+            </div>
+        }
+            <div class="table-container">
+                <label class="float-end">Total @Model.ApiLogs.Length records</label>
+                <table aria-describedby="title" class="table table-bordered border-primary table-striped">
+                    <thead class="theadj">
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">DeviceGuid</th>
+                            <th scope="col">Api</th>
+                            <th scope="col">Request</th>
+                            <th scope="col">Response</th>
+                            <th scope="col">Created</th>
+                            <th scope="col">CreatedBy</th>
+                            <th scope="col">MachineId</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var apiLog in Model.ApiLogs)
+                        {
+                            var stt = Stt++;
+                            <tr>
+                                <th scope="row">@Stt</th>
+                                <td>@apiLog.DeviceGuid</td>
+                                <td>@apiLog.Api</td>
+                                <td>@apiLog.Request</td>
+                                <td class="text-break">@apiLog.Response</td>
+                                <td>@apiLog.Created</td>
+                                <td class="text-break">@apiLog.CreatedBy</td>
+                                <td>@apiLog.MachineId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</main>

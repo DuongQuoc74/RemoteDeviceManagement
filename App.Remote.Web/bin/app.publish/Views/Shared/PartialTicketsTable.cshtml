@@ -1,0 +1,34 @@
+﻿@model Jabil.Pico.Common.ViewModels.TicketListVM
+
+<table aria-describedby="title" class="table table-bordered border-primary table-striped">
+    <thead class="theadj">
+        <tr>
+            <th scope="col">Ticket ID</th>
+            <th scope="col">DateStop</th>
+            <th scope="col">Machine</th>
+            <th scope="col">Classification</th>
+            <th scope="col">New Start Time</th>
+            <th scope="col">Level</th>
+            <th scope="col">Part Number</th>
+            <th scope="col">Closed by</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Ticket in Model.Tickets)
+        {
+            <tr>
+                <th scope="row">@Ticket.Id</th>
+                <td>@Ticket.DateStop</td>
+                <td>@Ticket.MachineName</td>
+                <td>@Ticket.ClassificationValue</td>
+                @*<td>@(Ticket.NewStartTime.Value.Year<2000?"":Ticket.NewStartTime)</td>*@
+                <td>@(Ticket.NewStartTime.HasValue && Ticket.NewStartTime.Value.Year < 2000 ? "" : Ticket.NewStartTime?.ToString())</td>
+                <td>@Ticket.Level</td>
+                <td>@Ticket.PartNumber</td>
+                <td>@Ticket.ClosedBy</td>
+                <td>@Ticket.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>

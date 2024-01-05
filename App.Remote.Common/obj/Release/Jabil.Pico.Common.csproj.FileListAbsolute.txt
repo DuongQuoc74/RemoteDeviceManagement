@@ -1,0 +1,12 @@
+E:\TAMKHOAJSC\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\bin\Release\Jabil.Pico.Common.dll
+E:\TAMKHOAJSC\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\bin\Release\Jabil.Pico.Common.pdb
+E:\TAMKHOAJSC\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.csproj.AssemblyReference.cache
+E:\TAMKHOAJSC\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.csproj.CoreCompileInputs.cache
+E:\TAMKHOAJSC\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.dll
+E:\TAMKHOAJSC\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.pdb
+D:\Data\File.Net\Pico_Jabil\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\bin\Release\Jabil.Pico.Common.dll
+D:\Data\File.Net\Pico_Jabil\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\bin\Release\Jabil.Pico.Common.pdb
+D:\Data\File.Net\Pico_Jabil\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.csproj.AssemblyReference.cache
+D:\Data\File.Net\Pico_Jabil\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.csproj.CoreCompileInputs.cache
+D:\Data\File.Net\Pico_Jabil\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.dll
+D:\Data\File.Net\Pico_Jabil\JBS.Pico\Jabil.Pico.Web\Jabil.Pico.Common\obj\Release\Jabil.Pico.Common.pdb

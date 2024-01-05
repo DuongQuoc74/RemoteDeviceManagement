@@ -1,0 +1,132 @@
+﻿@model Jabil.Pico.Common.ViewModels.SettingVM[]
+
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <div id="tableSetting">
+        <section class="row" aria-labelledby="aspnetTitle">
+            <h1 id="title">Settings</h1>
+        </section>
+        <div class="pico-detail">
+            <div class="table-container">
+                <label class="float-end">Total @Model.Length records</label>
+                <table aria-describedby="title" class="table table-bordered border-primary table-striped">
+                    <thead class="theadj">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Value</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td class="text-break">@item.Value</td>
+                                <td >@item.Available</td>
+                                <td>
+                                    <a href="#" data-id="@item.Name" class="btn btn-success btnEdit" data-bs-toggle="modal" data-bs-target="#settingModal">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> 
+</main>
+
+
+<!-- Modal -->
+<div class="modal fade" id="settingModal" tabindex="-1" aria-labelledby="settingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="settingModalLabel">Editing</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="Name" class="form-label"> Name </label>
+                                <input type="text" class="form-control" id="Name" disabled />
+                            </div>
+                            <div class="mb-3">
+                                <label for="Value" class="form-label">Value</label>
+                                <input type="text" class="form-control" id="Value" required/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-check-label" for="Available">Available</label>
+                                <input type="checkbox" class="form-check-input" disabled id="Available" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var herf = window.location.href;
+        $(document).ready(function () {
+            $('body').on('click', '.btnEdit', function () {
+                var name = $(this).data('id');
+                GetDataByName(name);
+            });
+            $('body').on('click', '#btnSave', function () {
+                var name = $('#Name').val();
+                var value = $('#Value').val();
+                var available = $('#Available').prop('checked');
+                var model = {
+                    Name: name,
+                    Value: value,
+                    Available: available
+                };
+                Update(model);
+            });
+        });
+
+        function GetDataByName(name) {
+            $.ajax({
+                url: herf + '/Edit',
+                type: 'GET',
+                data: { name: name },
+                success: function (res) {
+                    if (res.data != null) {
+                        $('#Name').val(res.data.Name);
+                        $('#Value').val(res.data.Value);
+                        $('#Available').val(res.data.Available).prop('checked', true);
+                        $('#settingModal').modal('show');
+                    }
+                }
+            });
+        }
+
+        function Update(model) {
+            $.ajax({
+                url: herf + '/Edit',
+                type: 'POST',
+                data: model,
+                success: function (res) {
+                    $('#settingModal').modal('hide');
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}

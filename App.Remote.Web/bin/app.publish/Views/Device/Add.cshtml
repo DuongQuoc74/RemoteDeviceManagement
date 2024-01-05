@@ -1,0 +1,72 @@
+﻿@model Jabil.Pico.Common.ViewModels.DeviceAddVM
+
+@{
+    ViewBag.Title = "Add Device";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Add Device</h1>
+    </section>
+    <form id="formAdd" class="row" action="~/Device/Add" method="post">
+        <div class="find-panel">
+            <input type="submit" id="save" class="btn btn-success pico-button" value="Save">
+            <a href="~/Device/Index" class="btn btn-warning pico-button">Cancel</a>
+        </div>
+        <div class="pico-detail row">
+            <div class="col-5">
+                <div class="col-md-12">
+                    <label for="MachineId" class="form-label">Machine Id</label>
+                    <input type="text" id="MachineId" name="MachineId" class="form-control" readonly>
+                </div>
+                <div class="col-md-12">
+                    <label for="Remark" class="form-label">Remark</label>
+                    <textarea id="Remark" name="Remark" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="fixed-height-panel col-5">
+                <label class="float-end">Total @Model.Machines.Length records</label>
+                <table aria-describedby="title" class="table table-bordered border-primary table-striped">
+                    <thead class="theadj">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Machine Id</th>
+                            <th scope="col">Machine Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var Machine in Model.Machines)
+                        {
+                            <tr>
+                                <td><input type="checkbox" name="ids" value="@Machine.Id" /></td>
+                                <td>@Machine.Id</td>
+                                <td>@Machine.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("input[name='ids']").change(function () {
+                $("input[name='ids']").prop("checked", false);
+                $(this).prop("checked", true);
+                $("#MachineId").val($(this).val());
+            });
+        });
+
+        $(function () {
+            $("#formAdd").submit(function (event) {
+                if (!$("input[name='ids']").is(":checked")) {
+                    event.preventDefault(); // Ngăn chặn việc gửi biểu mẫu nếu không hợp lệ
+                    alert("Please select machine to continue."); // Hiển thị thông báo
+                }
+            });
+        });
+    </script>
+}

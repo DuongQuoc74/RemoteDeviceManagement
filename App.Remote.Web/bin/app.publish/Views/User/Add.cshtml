@@ -1,0 +1,51 @@
+﻿@model Jabil.Pico.Common.ViewModels.UserRoleVM
+@{
+    ViewBag.Title = "Users";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Users</h1>
+    </section>
+
+    <div class="pico-detail">
+        @if (!string.IsNullOrEmpty(ViewBag.SuccessMsg))
+        {
+            <div class="alert alert-danger">@ViewBag.SuccessMsg</div>
+        }
+        <form class="row" action="~/User/Add" method="post">
+            <div class="col-12">
+                <br />
+                <label for="employeeNumber" class="form-label">Employee Number</label>
+                <input type="text" id="employeeNumber" name="EmployeeNumber" class="form-control" placeholder="user1">
+            </div>
+            <div class="col-md-12">
+                <br />
+                <label for="windowsNT" class="form-label">WindowsNT</label>
+                <input type="text" id="windowsNT" name="WindowsNT" class="form-control" placeholder="user1">
+            </div>
+            <div class="col-md-12">
+                <br />
+                <label for="roleId" class="form-label">RoleId</label>
+                <select id="roleId" name="RoleId" class="form-control">
+                    <option value="1" selected>1 - Administrator</option>
+                    <option value="2">2 - User</option>
+                </select>
+            </div>
+            <div class="col-md-12">
+                <br />
+                <label for="available" class="form-label">Available</label>
+                <select id="available" name="Available" class="form-control">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
+            </div>
+            <div class="col-md-12">
+                <br />
+                <input type="submit" id="save" class="btn btn-success" value="Save">
+                <a href="~/User/Index" class="btn btn-danger" >Cancel</a>
+            </div>
+        </form>
+        <br />
+    </div>
+</main>

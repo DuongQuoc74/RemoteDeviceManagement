@@ -1,0 +1,106 @@
+﻿@model Jabil.Pico.Common.ViewModels.DeviceListVM
+@{
+    TimeSpan onlineTimeOutMinutes = TimeSpan.FromMinutes(Int32.Parse(Model.DeviceSetting.OnlineTimeOutMinutes));
+    TimeSpan ticketsApiCheckTimeOutMinutes = TimeSpan.FromMinutes(Int32.Parse(Model.DeviceSetting.TicketsApiCheckTimeOutMinutes));
+
+
+}
+<span class="float-end">Total @Model.Devices.Length records</span>
+<table aria-describedby="title" class="table table-bordered border-primary table-striped">
+    <thead class="theadj">
+        <tr>
+            <th scope="col"><input type="checkbox" id="select-all" /></th>
+            <th scope="col">Device ID</th>
+            <th scope="col">Machine Name</th>
+            <th scope="col">Machine ID</th>
+            <th scope="col">Status</th>
+            <th scope="col">Remark</th>
+            <th scope="col">Online</th>
+            <th scope="col">Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Device in Model.Devices)
+        {
+            <tr>
+                <td><input class="deviceCheckbox" type="checkbox" name="ids" value="@Device.Id" /></td>
+                <td>@Device.Id</td>
+                <td>@Device.MachineName</td>
+                <td>@Device.MachineId</td>
+                <td>
+                    @if (Device.Status.Equals(Jabil.Pico.Common.DeviceStatusValues.Disable, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span class="text-bg-warning">@Device.Status</span>
+                    }
+                    else if (Device.Status.Equals(Jabil.Pico.Common.DeviceStatusValues.Active, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span class="text-bg-primary">@Device.Status</span>
+                    }
+                    else if (Device.Status.Equals(Jabil.Pico.Common.DeviceStatusValues.Deactivated, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span class="text-bg-secondary">@Device.Status</span>
+                    }
+                </td>
+                <td>@Device.Remark</td>
+                <td>
+                    @{
+                        TimeSpan? timeOnlineResult = DateTime.Now - Device.LastOnlineCheck;
+                        TimeSpan? timeTicketResult = DateTime.Now - Device.TicketDateStop;
+
+                    }
+                    @if (timeOnlineResult <= onlineTimeOutMinutes)
+                    {
+                        <div style="color: forestgreen">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                </svg>
+                            </i>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div style="color: red">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                                </svg>
+                            </i>
+                        </div>
+
+                    }
+
+                </td>
+
+                @if (Device.TicketDateStop == null)
+                {
+                    <td class="bg-warning">
+                        @Html.ActionLink("Detail", "Detail", new { id = Device.Id })
+                    </td>
+
+                }
+                else
+                {
+                    if (timeTicketResult < ticketsApiCheckTimeOutMinutes)
+                    {
+                        <td style="color: black" class="bg-warning">
+                            @Html.ActionLink("stopped at " + @Device.TicketDateStop + " - Ticket #" + @Device.TicketId, "Detail", new { id = Device.Id }) |
+                            <a href="http://@Model.DeviceSetting.CloseTicketURL?Line=@Device.LineName&Process=@Model.DeviceSetting.CloseTicketParameterProcess&Machine=@Device.MachineName&PKMachine=@Device.MachineId&PKProcesID=@Model.DeviceSetting.CloseTicketParameterProcesId&PKLineID=@Device.LineId" rel="noopener" target="_blank">Close ticket</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="color: black" class="bg-warning">
+                            @Html.ActionLink("stopped at " + @Device.TicketDateStop + " - Ticket #" + @Device.TicketId, "Detail", new { id = Device.Id }) |
+                            <a style="color: red" href="http://@Model.DeviceSetting.CloseTicketURL?Line=@Device.LineName&Process=@Model.DeviceSetting.CloseTicketParameterProcess&Machine=@Device.MachineName&PKMachine=@Device.MachineId&PKProcesID=@Model.DeviceSetting.CloseTicketParameterProcesId&PKLineID=@Device.LineId" rel="noopener" target="_blank">Close ticket</a>
+                        </td>
+                    }
+
+                }
+            </tr>
+        }
+    </tbody>
+</table>
